@@ -1,0 +1,46 @@
+{
+  "name": "colurs",
+  "version": "1.0.0",
+  "description": "Colors for NodeJS and Browser",
+  "main": "dist/index.js",
+  "scripts": {
+    "compile": "node ./node_modules/typescript/bin/tsc -p ./src/tsconfig.json",
+    "browserify": "node ./node_modules/browserify/bin/cmd  ./dist/index.js -o ./dist/browser.js",
+    "docs": "node ./node_modules/typedoc/bin/typedoc --out ./docs ./src --options ./typedoc.json",
+    "commit": "git commit -am 'auto commit'",
+    "push": "git push",
+    "build": "npm run compile && npm run browserify && npm run docs",
+    "test": "mocha --opts ./src/mocha.opts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/origin1tech/colurs.git"
+  },
+  "keywords": [
+    "Colors",
+    "Chalk",
+    "NodeJS",
+    "Browser"
+  ],
+  "author": "Origin1 Technologies <origin1tech@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/origin1tech/colurs/issues"
+  },
+  "homepage": "https://github.com/origin1tech/colurs#readme",
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.7",
+    "browserify": "^14.4.0",
+    "chai": "^4.0.2",
+    "del": "^3.0.0",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.1.0",
+    "typedoc": "^0.7.1",
+    "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "ansi-html": "0.0.7"
+  }
+}

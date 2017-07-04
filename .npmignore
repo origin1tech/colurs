@@ -1,0 +1,6 @@
+.tmp/
+.vscode/
+src/
+test.js
+tslint.json
+typedoc.json
