@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Colors for NodeJS and Browser",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "compile": "node ./node_modules/typescript/bin/tsc -p ./src/tsconfig.json",
     "browserify": "node ./node_modules/browserify/bin/cmd  ./dist/index.js -o ./dist/browser.js",
@@ -10,6 +11,7 @@
     "commit": "git commit -am 'auto commit'",
     "push": "git push",
     "build": "npm run compile && npm run browserify && npm run docs",
+    "release": "npm run build && npm publish",
     "test": "mocha --opts ./src/mocha.opts"
   },
   "repository": {
