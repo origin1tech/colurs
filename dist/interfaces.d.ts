@@ -100,14 +100,13 @@ export interface IColursInstance {
     new (options?: IColurOptions): IColurs;
 }
 export interface IColurs extends IColursStyle {
-    Colurs: IColursInstance;
-    options: IColurOptions;
-    setOption(key: any, val: any): void;
-    strip(obj: any): any;
-    applyAnsi(str: string, style: string | string[], isBrowser?: boolean): string | any[];
-    applyHtml(str: string, style: string | string[]): string;
-    toHtml(str: string): string;
-    applyCss(str: string, style: string | string[]): any[];
-    browser(state?: boolean): boolean;
-    enabled(state?: boolean): boolean;
+    options?: IColurOptions;
+    setOption?(key: any, val: any): void;
+    strip?(obj: any): any;
+    applyAnsi?(str: string, style: string | string[], isBrowser?: boolean): string | any[];
+    applyHtml?(str: string, style: string | string[]): string;
+    toHtml?(str: string): string;
+    applyCss?(str: string, style: string | string[]): any[];
+    browser?(state?: boolean): boolean;
+    enabled?(state?: boolean): boolean;
 }

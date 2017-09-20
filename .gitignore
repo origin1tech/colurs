@@ -57,5 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
-.tmp
+.tmp/
 test.js
+temp.js
+test.ts
+temp.ts

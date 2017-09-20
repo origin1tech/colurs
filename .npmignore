@@ -1,6 +1,8 @@
 .tmp/
 .vscode/
-src/
 test.js
+temp.js
+test.ts
+temp.ts
 tslint.json
 typedoc.json

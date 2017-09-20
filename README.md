@@ -19,7 +19,7 @@ $ npm install colurs
 import * as colurs from 'colurs';
 
 // Gets default instance.
-const clrs = colurs.get();
+const clrs = colurs.get({ /* your options here */ });
 
 // Create a string where the name "Bob" is in bold red.
 let str = `My name is ${clrs.bold.red('Bob')}.`;
@@ -109,6 +109,10 @@ import { Colurs } from 'colurs';
 
 const clrs = new Colurs({ /* your options here */});
 ```
+
+## Browser
+
+In the dist folder there is a browserify.js file you can include in your project however the best way to include the library is to compile using Webpack, Gulp, Grunt etc. Kind of cheated here in that probably should prevent exposing some methods not avail in the browser but for now just detects if is in node or not.
 
 ## License
 

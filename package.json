@@ -1,17 +1,19 @@
 {
   "name": "colurs",
-  "version": "1.0.0",
+  "version": "1.0.13",
   "description": "Colors for NodeJS and Browser",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
+    "clean": "node ./build/clean",
     "compile": "node ./node_modules/typescript/bin/tsc -p ./src/tsconfig.json",
     "browserify": "node ./node_modules/browserify/bin/cmd  ./dist/index.js -o ./dist/browser.js",
     "docs": "node ./node_modules/typedoc/bin/typedoc --out ./docs ./src --options ./typedoc.json",
-    "commit": "git commit -am 'auto commit'",
+    "commit": "git add . && git commit -am 'auto commit'",
     "push": "git push",
+    "bump": "node ./build/bump",
     "build": "npm run compile && npm run browserify && npm run docs",
-    "release": "npm run build && npm publish",
+    "release": "npm run build && npm run bump && npm run commit && npm publish",
     "test": "mocha --opts ./src/mocha.opts"
   },
   "repository": {
@@ -40,9 +42,11 @@
     "mocha": "^3.4.2",
     "ts-node": "^3.1.0",
     "typedoc": "^0.7.1",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.1",
+    "stiks": "^1.0.0"
   },
   "dependencies": {
-    "ansi-html": "0.0.7"
+    "ansi-html": "0.0.7",
+    "typescript": "^2.5.0"
   }
 }

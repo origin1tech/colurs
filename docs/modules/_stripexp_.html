@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;interfaces&quot; | NBuild</title>
+	<title>&quot;stripexp&quot; | NBuild</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_interfaces_.html">&quot;interfaces&quot;</a>
+					<a href="_stripexp_.html">&quot;stripexp&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;interfaces&quot;</h1>
+			<h1>External module &quot;stripexp&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -71,35 +71,39 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.iansistyles.html" class="tsd-kind-icon">IAnsi<wbr>Styles</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icoluroptions.html" class="tsd-kind-icon">IColur<wbr>Options</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icolurs.html" class="tsd-kind-icon">IColurs</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icolurschain.html" class="tsd-kind-icon">IColurs<wbr>Chain</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icolursinstance.html" class="tsd-kind-icon">IColurs<wbr>Instance</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icolursstyle.html" class="tsd-kind-icon">IColurs<wbr>Style</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_interfaces_.icssstyles.html" class="tsd-kind-icon">ICss<wbr>Styles</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_interfaces_.html#ansituple" class="tsd-kind-icon">Ansi<wbr>Tuple</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_stripexp_.html#pattern" class="tsd-kind-icon">pattern</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_stripexp_.html#stripexp" class="tsd-kind-icon">stripexp</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
-					<a name="ansituple" class="tsd-anchor"></a>
-					<h3>Ansi<wbr>Tuple</h3>
-					<div class="tsd-signature tsd-kind-icon">Ansi<wbr>Tuple<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="pattern" class="tsd-anchor"></a>
+					<h3>pattern</h3>
+					<div class="tsd-signature tsd-kind-icon">pattern<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)&#x27;,&#x27;(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry&#x3D;&gt;&lt;~]))&#x27;].join(&#x27;|&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/origin1tech/colurs/blob/2efa147/src/interfaces.ts#L64">interfaces.ts:64</a></li>
+							<li>Defined in stripexp.ts:5</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>see <a href="https://github.com/chalk/ansi-regex">https://github.com/chalk/ansi-regex</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="stripexp" class="tsd-anchor"></a>
+					<h3>stripexp</h3>
+					<div class="tsd-signature tsd-kind-icon">stripexp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;new RegExp(pattern, &#x27;g&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in stripexp.ts:10</li>
 						</ul>
 					</aside>
 				</section>
@@ -117,10 +121,10 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_index_.html">"index"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="_interfaces_.html">"interfaces"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="_stripexp_.html">"stripexp"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -130,29 +134,11 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.iansistyles.html" class="tsd-kind-icon">IAnsi<wbr>Styles</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_stripexp_.html#pattern" class="tsd-kind-icon">pattern</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icoluroptions.html" class="tsd-kind-icon">IColur<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icolurs.html" class="tsd-kind-icon">IColurs</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icolurschain.html" class="tsd-kind-icon">IColurs<wbr>Chain</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icolursinstance.html" class="tsd-kind-icon">IColurs<wbr>Instance</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icolursstyle.html" class="tsd-kind-icon">IColurs<wbr>Style</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_interfaces_.icssstyles.html" class="tsd-kind-icon">ICss<wbr>Styles</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="_interfaces_.html#ansituple" class="tsd-kind-icon">Ansi<wbr>Tuple</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_stripexp_.html#stripexp" class="tsd-kind-icon">stripexp</a>
 					</li>
 				</ul>
 			</nav>
