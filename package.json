@@ -1,6 +1,6 @@
 {
   "name": "colurs",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Colors for NodeJS and Browser",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -9,8 +9,7 @@
     "compile": "node ./node_modules/typescript/bin/tsc -p ./src/tsconfig.json",
     "browserify": "node ./node_modules/browserify/bin/cmd  ./dist/index.js -o ./dist/browser.js",
     "docs": "node ./node_modules/typedoc/bin/typedoc --out ./docs ./src --options ./typedoc.json",
-    "commit": "git add . && git commit -am 'auto commit'",
-    "push": "git push",
+    "commit": "git add . && git commit -am 'auto commit' && git push",
     "bump": "node ./build/bump",
     "build": "npm run compile && npm run browserify && npm run docs",
     "release": "npm run build && npm run bump && npm run commit && npm publish",
