@@ -54,8 +54,8 @@ let _defaults: IColurOptions = {
     bgMagenta: [45, 49],
     bgCyan: [46, 49],
     bgWhite: [47, 49],
-    bgGray: [90, 39],
-    bgGrey: [90, 39]
+    bgGray: [47, 49], // fallback to white.
+    bgGrey: [47, 49]
 
     // bright
     // redBright: [91, 39],
@@ -461,10 +461,47 @@ class ColursInstance implements IColurs {
 
     }
 
+    const hasColor = containsAny(_colorNames, style);
+    const hasBgColor = containsAny(_bgColorNames, style);
+
     // When Browser return styles for formatting
     // with console.log.
     if (isBrowser)
       return this.applyCss(str, style);
+
+    // Hijack inverse and handle manually
+    // TODO: make common method for CSS and Terminal to handle this.
+    if (~style.indexOf('inverse')) {
+
+      if (hasColor || hasBgColor) {
+
+        // Remove inverse and bgColor or color.
+        style.splice(style.indexOf('inverse'), 1);
+        if (hasColor)
+          style.splice(style.indexOf(hasColor), 1);
+        if (hasBgColor)
+          style.splice(style.indexOf(hasBgColor), 1);
+
+        let color = hasBgColor ? hasBgColor.replace(/^bg/, '').toLowerCase() : 'black';
+        let bgColor = hasColor ? 'bg' + hasColor.charAt(0).toUpperCase() + hasColor.slice(1) : 'bgGray';
+
+        if (bgColor !== 'bgGray' && color === 'black')
+          color = 'white';
+
+        if (bgColor.replace(/^bg/, '').toLocaleLowerCase() === color) {
+          color = 'black';
+        }
+
+        console.log(color, bgColor);
+
+        // Add the new styles.
+        style.push(bgColor);
+        style.push(color);
+
+        console.log(style);
+
+      }
+    }
 
     // Iterate and apply styles.
     (style as string[]).forEach((s) => {
@@ -511,7 +548,7 @@ class ColursInstance implements IColurs {
     }
 
     // Check if we should inverse colors.
-    if (style.indexOf('inverse') !== -1) {
+    if (~style.indexOf('inverse')) {
 
       const hasColor = containsAny(_colorNames, style);
       const hasBgColor = containsAny(_bgColorNames, style);
