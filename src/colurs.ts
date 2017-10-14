@@ -266,12 +266,13 @@ class ColursInstance implements IColurs {
    */
   private start(style: string): string {
     let prefix = '\x1B[';
-    // if (_isWinTerm) {
-    //   if (style === 'blue')
-    //     prefix = '\u001B[94m';
-    //   if (style === 'gray')
-    //     prefix = '';
-    // }
+    let code = this.options.ansiStyles[style][0];
+    if (_isWinTerm) {
+      if (style === 'blue')
+        code = 94;
+      if (style === 'dim')
+        return '';
+    }
     return style ? `${prefix}${this.options.ansiStyles[style][0]}m` : '';
   }
 
@@ -440,7 +441,7 @@ class ColursInstance implements IColurs {
    * @param style the style or array of styles to apply.
    * @param isBrowser indicates browser css styles should be returned.
    */
-  applyAnsi(str: any, style: string | string[], isBrowser?: boolean): string | any[] {
+  applyAnsi(str: any, style: string | string[], isBrowser?: boolean) {
 
     isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
 

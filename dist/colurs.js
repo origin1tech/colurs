@@ -229,12 +229,13 @@ var ColursInstance = (function () {
      */
     ColursInstance.prototype.start = function (style) {
         var prefix = '\x1B[';
-        // if (_isWinTerm) {
-        //   if (style === 'blue')
-        //     prefix = '\u001B[94m';
-        //   if (style === 'gray')
-        //     prefix = '';
-        // }
+        var code = this.options.ansiStyles[style][0];
+        if (_isWinTerm) {
+            if (style === 'blue')
+                code = 94;
+            if (style === 'dim')
+                return '';
+        }
         return style ? "" + prefix + this.options.ansiStyles[style][0] + "m" : '';
     };
     /**
