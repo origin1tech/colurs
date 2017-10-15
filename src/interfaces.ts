@@ -8,6 +8,7 @@ export interface IColursChain extends IColursStyle {
 export interface IColursStyle {
 
   // modifiers
+  reset?: IColursChain;
   bold?: IColursChain;
   dim?: IColursChain;
   italic?: IColursChain;
@@ -65,6 +66,7 @@ export type AnsiTuple = [number, number];
 
 export interface IAnsiStyles {
 
+  reset?: AnsiTuple;
   bold?: AnsiTuple;
   italic?: AnsiTuple;
   underline?: AnsiTuple;

@@ -4,6 +4,7 @@ export interface IColursChain extends IColursStyle {
     (str: string, ...args: any[]): string | any[];
 }
 export interface IColursStyle {
+    reset?: IColursChain;
     bold?: IColursChain;
     dim?: IColursChain;
     italic?: IColursChain;
@@ -34,6 +35,7 @@ export interface IColursStyle {
 }
 export declare type AnsiTuple = [number, number];
 export interface IAnsiStyles {
+    reset?: AnsiTuple;
     bold?: AnsiTuple;
     italic?: AnsiTuple;
     underline?: AnsiTuple;

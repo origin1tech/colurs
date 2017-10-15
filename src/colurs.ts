@@ -25,6 +25,7 @@ let _defaults: IColurOptions = {
   ansiStyles: {
 
     // modifiers
+    reset: [0, 0],
     bold: [1, 22],
     italic: [3, 23],
     underline: [4, 24],
@@ -170,6 +171,7 @@ let levelMap = {
 // Get array of each prop.
 let _ansiKeys = Object.keys(_defaults.ansiStyles);
 let _cssKeys = Object.keys(_defaults.cssStyles);
+let prefix = '\x1B['; // '\u001B';
 
 // HELPER METHODS
 
@@ -265,7 +267,6 @@ class ColursInstance implements IColurs {
    * @param style the starting style.
    */
   private start(style: string): string {
-    let prefix = '\x1B[';
     let code = this.options.ansiStyles[style][0];
     if (_isWinTerm) {
       if (style === 'blue')
@@ -283,7 +284,7 @@ class ColursInstance implements IColurs {
    * @param style the style to be applied.
    */
   private end(style: string): string {
-    return style ? `\x1B[${this.options.ansiStyles[style][1]}m` : '';
+    return style ? `${prefix}${this.options.ansiStyles[style][1]}m` : '';
   }
 
   private getInverse(str: string, def?: string): string {
@@ -492,13 +493,9 @@ class ColursInstance implements IColurs {
           color = 'black';
         }
 
-        console.log(color, bgColor);
-
         // Add the new styles.
         style.push(bgColor);
         style.push(color);
-
-        console.log(style);
 
       }
     }

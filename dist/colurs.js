@@ -15,6 +15,7 @@ var _defaults = {
     browser: false,
     ansiStyles: {
         // modifiers
+        reset: [0, 0],
         bold: [1, 22],
         italic: [3, 23],
         underline: [4, 24],
@@ -146,6 +147,7 @@ var levelMap = {
 // Get array of each prop.
 var _ansiKeys = Object.keys(_defaults.ansiStyles);
 var _cssKeys = Object.keys(_defaults.cssStyles);
+var prefix = '\x1B['; // '\u001B';
 // HELPER METHODS
 function isNode() {
     if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
@@ -228,7 +230,6 @@ var ColursInstance = (function () {
      * @param style the starting style.
      */
     ColursInstance.prototype.start = function (style) {
-        var prefix = '\x1B[';
         var code = this.options.ansiStyles[style][0];
         if (_isWinTerm) {
             if (style === 'blue')
@@ -245,7 +246,7 @@ var ColursInstance = (function () {
      * @param style the style to be applied.
      */
     ColursInstance.prototype.end = function (style) {
-        return style ? "\u001B[" + this.options.ansiStyles[style][1] + "m" : '';
+        return style ? "" + prefix + this.options.ansiStyles[style][1] + "m" : '';
     };
     ColursInstance.prototype.getInverse = function (str, def) {
         var inv;
@@ -410,11 +411,9 @@ var ColursInstance = (function () {
                 if (bgColor.replace(/^bg/, '').toLocaleLowerCase() === color) {
                     color = 'black';
                 }
-                console.log(color, bgColor);
                 // Add the new styles.
                 style.push(bgColor);
                 style.push(color);
-                console.log(style);
             }
         }
         // Iterate and apply styles.
