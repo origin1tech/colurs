@@ -6,3 +6,5 @@ test.ts
 temp.ts
 tslint.json
 typedoc.json
+src/
+build/
