@@ -9,12 +9,19 @@ declare var module;
 
 // CONSTANTS & DEFAULTS
 
-let _enabled = true;
-let _browser = false;
-const _dotExp = /\./g;
-const _isWinTerm = process.platform === 'win32' && !(process.env.TERM || '')
+const DOT_EXP = /\./g;
+const IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
   .toLowerCase()
   .startsWith('xterm');
+
+const ANSI_PATTERN = [
+  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
+  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
+].join('|');
+const ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
+
+let _enabled = true;
+let _browser = false;
 
 // Default options.
 let _defaults: IColurOptions = {
@@ -235,6 +242,7 @@ function containsAny(src: string[], vals: string[]): string {
 
 class ColursInstance implements IColurs {
 
+  exp: RegExp = ANSI_EXP;
   options: IColurOptions;
 
   constructor(options?: IColurOptions) {
@@ -268,7 +276,7 @@ class ColursInstance implements IColurs {
    */
   private start(style: string): string {
     let code = this.options.ansiStyles[style][0];
-    if (_isWinTerm) {
+    if (IS_WIN_TERM) {
       if (style === 'blue')
         code = 94;
       if (style === 'dim')
@@ -359,7 +367,7 @@ class ColursInstance implements IColurs {
 
     args.unshift(type);
 
-    console.log.apply(console, args);
+    process.stderr.write(args.join(' ') + '\n');
 
   }
 
@@ -435,6 +443,18 @@ class ColursInstance implements IColurs {
   }
 
   /**
+   * Has Ansi
+   * Check if value has ansi styling.
+   *
+   * @param val the value to be inspected.
+   */
+  hasAnsi(val: any) {
+    if (typeof val !== 'string')
+      return false;
+    return ANSI_EXP.test(val);
+  }
+
+  /**
    * Style
    * Applies color and styles to string.
    *
@@ -442,7 +462,7 @@ class ColursInstance implements IColurs {
    * @param style the style or array of styles to apply.
    * @param isBrowser indicates browser css styles should be returned.
    */
-  applyAnsi(str: any, style: string | string[], isBrowser?: boolean) {
+  applyAnsi<T>(str: any, style: string | string[], isBrowser?: boolean): T | T[] {
 
     isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
 
@@ -455,7 +475,7 @@ class ColursInstance implements IColurs {
     // Ensure style is an array.
     if (!Array.isArray(style)) {
 
-      if (_dotExp.test(style as string))
+      if (DOT_EXP.test(style as string))
         style = (style as string).split('.');
       else
         style = <string[]>[style];
@@ -537,7 +557,7 @@ class ColursInstance implements IColurs {
     // Ensure style is an array.
     if (!Array.isArray(style)) {
 
-      if (_dotExp.test(style as string))
+      if (DOT_EXP.test(style as string))
         style = (style as string).split('.');
       else
         style = <string[]>[style];
@@ -662,4 +682,9 @@ function createInstance(options?: IColurOptions): IColurs {
 // Expose Colurs for creating instances.
 const Colurs: IColursInstance & IColurs = ColursInstance;
 
-export { createInstance as get, Colurs };
+const get = (options?: IColurOptions) => {
+  process.stderr.write('DEPRECATED: .get() has been deprecated use .init() instead.\n');
+  return createInstance(options);
+};
+
+export { get, createInstance as init, Colurs };

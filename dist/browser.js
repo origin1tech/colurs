@@ -5,12 +5,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var toHtml = require("ansi-html");
 var stripexp_1 = require("./stripexp");
 // CONSTANTS & DEFAULTS
-var _enabled = true;
-var _browser = false;
-var _dotExp = /\./g;
-var _isWinTerm = process.platform === 'win32' && !(process.env.TERM || '')
+var DOT_EXP = /\./g;
+var IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
     .toLowerCase()
     .startsWith('xterm');
+var ANSI_PATTERN = [
+    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
+    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
+].join('|');
+var ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
+var _enabled = true;
+var _browser = false;
 // Default options.
 var _defaults = {
     enabled: true,
@@ -209,6 +214,7 @@ function containsAny(src, vals) {
 var ColursInstance = (function () {
     function ColursInstance(options) {
         var _this = this;
+        this.exp = ANSI_EXP;
         options = options || {};
         if (isUndefined(options.browser) && !isNode())
             options.browser = true;
@@ -233,7 +239,7 @@ var ColursInstance = (function () {
      */
     ColursInstance.prototype.start = function (style) {
         var code = this.options.ansiStyles[style][0];
-        if (_isWinTerm) {
+        if (IS_WIN_TERM) {
             if (style === 'blue')
                 code = 94;
             if (style === 'dim')
@@ -304,7 +310,7 @@ var ColursInstance = (function () {
         var color = levelMap[type];
         type = this.applyAnsi(type, color) + ':';
         args.unshift(type);
-        console.log.apply(console, args);
+        process.stderr.write(args.join(' ') + '\n');
     };
     Object.defineProperty(ColursInstance.prototype, "toHtml", {
         /**
@@ -368,6 +374,17 @@ var ColursInstance = (function () {
         }
     };
     /**
+     * Has Ansi
+     * Check if value has ansi styling.
+     *
+     * @param val the value to be inspected.
+     */
+    ColursInstance.prototype.hasAnsi = function (val) {
+        if (typeof val !== 'string')
+            return false;
+        return ANSI_EXP.test(val);
+    };
+    /**
      * Style
      * Applies color and styles to string.
      *
@@ -385,7 +402,7 @@ var ColursInstance = (function () {
         }
         // Ensure style is an array.
         if (!Array.isArray(style)) {
-            if (_dotExp.test(style))
+            if (DOT_EXP.test(style))
                 style = style.split('.');
             else
                 style = [style];
@@ -448,7 +465,7 @@ var ColursInstance = (function () {
             return [str];
         // Ensure style is an array.
         if (!Array.isArray(style)) {
-            if (_dotExp.test(style))
+            if (DOT_EXP.test(style))
                 style = style.split('.');
             else
                 style = [style];
@@ -545,10 +562,15 @@ function createInstance(options) {
         instance = new ColursInstance(options);
     return instance;
 }
-exports.get = createInstance;
+exports.init = createInstance;
 // Expose Colurs for creating instances.
 var Colurs = ColursInstance;
 exports.Colurs = Colurs;
+var get = function (options) {
+    process.stderr.write('DEPRECATED: .get() has been deprecated use .init() instead.\n');
+    return createInstance(options);
+};
+exports.get = get;
 
 }).call(this,require('_process'))
 },{"./stripexp":3,"_process":5,"ansi-html":4}],2:[function(require,module,exports){
