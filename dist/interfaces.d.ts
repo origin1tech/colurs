@@ -105,6 +105,7 @@ export interface IColurs extends IColursStyle {
     options?: IColurOptions;
     setOption?(key: any, val: any): void;
     strip?(obj: any): any;
+    hasAnsi?(val: any): boolean;
     applyAnsi?(str: string, style: string | string[], isBrowser?: boolean): string | any[];
     applyHtml?(str: string, style: string | string[]): string;
     toHtml?(str: string): string;
