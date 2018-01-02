@@ -565,7 +565,7 @@ exports.init = createInstance;
 var Colurs = ColursInstance;
 exports.Colurs = Colurs;
 var get = function (options) {
-    process.stderr.write('DEPRECATED: .get() has been deprecated use .init() instead.\n');
+    process.stderr.write('DEPRECATED: colurs.get() has been deprecated use colurs.init() instead.\n');
     return createInstance(options);
 };
 exports.get = get;

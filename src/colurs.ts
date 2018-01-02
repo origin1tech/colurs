@@ -683,7 +683,7 @@ function createInstance(options?: IColurOptions): IColurs {
 const Colurs: IColursInstance & IColurs = ColursInstance;
 
 const get = (options?: IColurOptions) => {
-  process.stderr.write('DEPRECATED: .get() has been deprecated use .init() instead.\n');
+  process.stderr.write('DEPRECATED: colurs.get() has been deprecated use colurs.init() instead.\n');
   return createInstance(options);
 };
 
