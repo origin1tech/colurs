@@ -13,7 +13,6 @@ var ANSI_PATTERN = [
 ].join('|');
 var ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
 var _enabled = true;
-var _browser = false;
 // Default options.
 var _defaults = {
     enabled: true,
@@ -151,18 +150,12 @@ var levelMap = {
 };
 // Get array of each prop.
 var _ansiKeys = Object.keys(_defaults.ansiStyles);
-var _cssKeys = Object.keys(_defaults.cssStyles);
 var prefix = '\x1B['; // '\u001B';
 // HELPER METHODS
 function isNode() {
     if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
         return true;
     return false;
-}
-// Cheesy clone but works fine here
-// prevents need for another dep.
-function clone(obj) {
-    return JSON.parse(JSON.stringify(obj));
 }
 function isPlainObject(val) {
     if (typeof val === 'undefined')
@@ -276,30 +269,6 @@ var ColursInstance = (function () {
             return def;
         return inv;
     };
-    ColursInstance.prototype.styleInstance = function (colurs, style) {
-        var self = this;
-        var styles = [style];
-        function c(str) {
-            var args = [].slice.call(arguments, 1);
-            var isBrowser = (typeof args[args.length - 1] === 'boolean') ? args.pop() : undefined;
-            var result = colurs.applyAnsi(str, styles, isBrowser);
-            // Add any additional args to array.
-            if (Array.isArray(result))
-                return result.concat(args);
-            // Join any args add to string.
-            return (args.length ? result + (' ' + args.join(' ')) : result);
-        }
-        // Iterate the keys building getters.
-        _ansiKeys.forEach(function (k) {
-            Object.defineProperty(c, k, {
-                get: function () {
-                    styles.push(k);
-                    return c;
-                }
-            });
-        });
-        return c;
-    };
     ColursInstance.prototype.log = function (type) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -382,14 +351,6 @@ var ColursInstance = (function () {
             return false;
         return ANSI_EXP.test(val);
     };
-    /**
-     * Style
-     * Applies color and styles to string.
-     *
-     * @param obj the string to be styled.
-     * @param style the style or array of styles to apply.
-     * @param isBrowser indicates browser css styles should be returned.
-     */
     ColursInstance.prototype.applyAnsi = function (str, style, isBrowser) {
         var _this = this;
         isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;

@@ -1,5 +1,5 @@
 
-import { IColursChain, IColursStyle, IColurs, IColursInstance, IColurOptions, IAnsiStyles, ICssStyles } from './interfaces';
+import { IColurs, IColursInstance, IColurOptions } from './interfaces';
 import * as toHtml from 'ansi-html';
 import { stripexp as _stripExp } from './stripexp';
 
@@ -21,7 +21,6 @@ const ANSI_PATTERN = [
 const ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
 
 let _enabled = true;
-let _browser = false;
 
 // Default options.
 let _defaults: IColurOptions = {
@@ -177,7 +176,6 @@ let levelMap = {
 
 // Get array of each prop.
 let _ansiKeys = Object.keys(_defaults.ansiStyles);
-let _cssKeys = Object.keys(_defaults.cssStyles);
 let prefix = '\x1B['; // '\u001B';
 
 // HELPER METHODS
@@ -186,12 +184,6 @@ function isNode() {
   if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
     return true;
   return false;
-}
-
-// Cheesy clone but works fine here
-// prevents need for another dep.
-function clone(obj) {
-  return JSON.parse(JSON.stringify(obj));
 }
 
 function isPlainObject(val: any) {
@@ -326,40 +318,6 @@ class ColursInstance implements IColurs {
 
   }
 
-  private styleInstance(colurs, style) {
-
-    const self = this;
-    const styles = [style];
-
-    function c(str) {
-
-      const args = [].slice.call(arguments, 1);
-      const isBrowser = (typeof args[args.length - 1] === 'boolean') ? args.pop() : undefined;
-      let result = colurs.applyAnsi(str, styles, isBrowser);
-
-      // Add any additional args to array.
-      if (Array.isArray(result))
-        return result.concat(args);
-
-      // Join any args add to string.
-      return (args.length ? result + (' ' + args.join(' ')) : result);
-
-    }
-
-    // Iterate the keys building getters.
-    _ansiKeys.forEach((k) => {
-      Object.defineProperty(c, k, {
-        get() {
-          styles.push(k);
-          return c;
-        }
-      });
-    });
-
-    return c;
-
-  }
-
   private log(type: string, ...args: any[]): void {
 
     let color = levelMap[type];
@@ -455,14 +413,24 @@ class ColursInstance implements IColurs {
   }
 
   /**
-   * Style
-   * Applies color and styles to string.
+   * Style applies color and styles.
    *
-   * @param obj the string to be styled.
+   * @param str the string to be styled.
+   * @param style the style or array of styles to apply.
+   */
+  applyAnsi(str: any, style: string | string[]): string;
+
+  /**
+   * Style applies color and styles for browser.
+   *
+   * @param str the string to be styled.
    * @param style the style or array of styles to apply.
    * @param isBrowser indicates browser css styles should be returned.
    */
-  applyAnsi<T>(str: any, style: string | string[], isBrowser?: boolean): T | T[] {
+  applyAnsi(str: any, style: string | string[], isBrowser: boolean): any[];
+
+
+  applyAnsi(str: any, style: string | string[], isBrowser?: boolean): string | any[] {
 
     isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
 
