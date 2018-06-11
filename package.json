@@ -1,6 +1,6 @@
 {
   "name": "colurs",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "Colors for NodeJS and Browser",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

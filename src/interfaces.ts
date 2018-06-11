@@ -2,7 +2,6 @@
 export interface IColursChain extends IColursStyle {
   (): boolean;
   (str: any, ...args: any[]): any;
-  (str: any, isBrowser: boolean): any[];
 }
 
 export interface IColursStyle {
