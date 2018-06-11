@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;stripexp&quot; | NBuild</title>
+	<title>&quot;ansi&quot; | Colurs</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">NBuild</a>
+					<a href="../index.html" class="title">Colurs</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_stripexp_.html">&quot;stripexp&quot;</a>
+					<a href="_ansi_.html">&quot;ansi&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;stripexp&quot;</h1>
+			<h1>External module &quot;ansi&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -73,8 +73,10 @@
 						<section class="tsd-index-section ">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_stripexp_.html#pattern" class="tsd-kind-icon">pattern</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_stripexp_.html#stripexp" class="tsd-kind-icon">stripexp</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_ansi_.html#has_ansi_exp" class="tsd-kind-icon">HAS_<wbr>ANSI_<wbr>EXP</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_ansi_.html#has_ansi_pattern" class="tsd-kind-icon">HAS_<wbr>ANSI_<wbr>PATTERN</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_ansi_.html#strip_exp" class="tsd-kind-icon">STRIP_<wbr>EXP</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_ansi_.html#strip_pattern" class="tsd-kind-icon">STRIP_<wbr>PATTERN</a></li>
 							</ul>
 						</section>
 					</div>
@@ -82,13 +84,43 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="pattern" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> pattern</h3>
-					<div class="tsd-signature tsd-kind-icon">pattern<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)&#x27;,&#x27;(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry&#x3D;&gt;&lt;~]))&#x27;].join(&#x27;|&#x27;)</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="has_ansi_exp" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> HAS_<wbr>ANSI_<wbr>EXP</h3>
+					<div class="tsd-signature tsd-kind-icon">HAS_<wbr>ANSI_<wbr>EXP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;new RegExp(HAS_ANSI_PATTERN, &#x27;g&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/origin1tech/colurs/blob/447eb3e/src/stripexp.ts#L5">stripexp.ts:5</a></li>
+							<li>Defined in ansi.ts:17</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="has_ansi_pattern" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> HAS_<wbr>ANSI_<wbr>PATTERN</h3>
+					<div class="tsd-signature tsd-kind-icon">HAS_<wbr>ANSI_<wbr>PATTERN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)&#x27;,&#x27;(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry&#x3D;&gt;&lt;~]))&#x27;].join(&#x27;|&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in ansi.ts:12</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="strip_exp" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> STRIP_<wbr>EXP</h3>
+					<div class="tsd-signature tsd-kind-icon">STRIP_<wbr>EXP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;new RegExp(STRIP_PATTERN, &#x27;g&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in ansi.ts:10</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="strip_pattern" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> STRIP_<wbr>PATTERN</h3>
+					<div class="tsd-signature tsd-kind-icon">STRIP_<wbr>PATTERN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)&#x27;,&#x27;(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry&#x3D;&gt;&lt;~]))&#x27;].join(&#x27;|&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in ansi.ts:5</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -96,16 +128,6 @@
 							<p>see <a href="https://github.com/chalk/ansi-regex">https://github.com/chalk/ansi-regex</a></p>
 						</div>
 					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="stripexp" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> stripexp</h3>
-					<div class="tsd-signature tsd-kind-icon">stripexp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;new RegExp(pattern, &#x27;g&#x27;)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/origin1tech/colurs/blob/447eb3e/src/stripexp.ts#L10">stripexp.ts:10</a></li>
-						</ul>
-					</aside>
 				</section>
 			</section>
 		</div>
@@ -115,17 +137,20 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="_ansi_.html">"ansi"</a>
+					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_colurs_.html">"colurs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_extens_.html">"extens"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_index_.html">"index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_interfaces_.html">"interfaces"</a>
-					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="_stripexp_.html">"stripexp"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_test_spec_.html">"test.spec"</a>
@@ -134,11 +159,17 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_ansi_.html#has_ansi_exp" class="tsd-kind-icon">HAS_<wbr>ANSI_<wbr>EXP</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_stripexp_.html#pattern" class="tsd-kind-icon">pattern</a>
+						<a href="_ansi_.html#has_ansi_pattern" class="tsd-kind-icon">HAS_<wbr>ANSI_<wbr>PATTERN</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_stripexp_.html#stripexp" class="tsd-kind-icon">stripexp</a>
+						<a href="_ansi_.html#strip_exp" class="tsd-kind-icon">STRIP_<wbr>EXP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_ansi_.html#strip_pattern" class="tsd-kind-icon">STRIP_<wbr>PATTERN</a>
 					</li>
 				</ul>
 			</nav>

@@ -1,7 +1,7 @@
-
+import './extens';
 import { IColurs, IColursInstance, IColurOptions } from './interfaces';
 import * as toHtml from 'ansi-html';
-import { stripexp as _stripExp } from './stripexp';
+import { STRIP_EXP, HAS_ANSI_EXP } from './ansi';
 
 // prevents Typescript from complaining.
 declare var window;
@@ -12,13 +12,7 @@ declare var module;
 const DOT_EXP = /\./g;
 const IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
   .toLowerCase()
-  .startsWith('xterm');
-
-const ANSI_PATTERN = [
-  '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
-  '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
-].join('|');
-const ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
+  .beginsWith('xterm');
 
 let _enabled = true;
 
@@ -234,7 +228,6 @@ function containsAny(src: string[], vals: string[]): string {
 
 class ColursInstance implements IColurs {
 
-  exp: RegExp = ANSI_EXP;
   options: IColurOptions;
 
   constructor(options?: IColurOptions) {
@@ -443,7 +436,7 @@ class ColursInstance implements IColurs {
   hasAnsi(val: any) {
     if (typeof val !== 'string')
       return false;
-    return ANSI_EXP.test(val);
+    return HAS_ANSI_EXP.test(val);
   }
 
   /**
@@ -615,14 +608,14 @@ class ColursInstance implements IColurs {
   strip(obj: any) {
 
     if (typeof obj === 'string')
-      return obj.replace(_stripExp, '');
+      return obj.replace(STRIP_EXP, '');
 
     // Iterate array check if "replace" exists.
     if (Array.isArray(obj)) {
       let i = obj.length;
       while (i--) {
         if (typeof obj[i].replace === 'function')
-          obj[i] = obj[i].replace(_stripExp, '');
+          obj[i] = obj[i].replace(STRIP_EXP, '');
       }
       return obj;
     }
@@ -636,7 +629,7 @@ class ColursInstance implements IColurs {
           }
           else {
             if (typeof obj[prop].replace === 'function')
-              obj[prop] = obj[prop].replace(_stripExp, '');
+              obj[prop] = obj[prop].replace(STRIP_EXP, '');
           }
         }
       }

@@ -1,17 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./extens");
 var toHtml = require("ansi-html");
-var stripexp_1 = require("./stripexp");
+var ansi_1 = require("./ansi");
 // CONSTANTS & DEFAULTS
 var DOT_EXP = /\./g;
 var IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
     .toLowerCase()
-    .startsWith('xterm');
-var ANSI_PATTERN = [
-    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
-    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
-].join('|');
-var ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
+    .beginsWith('xterm');
 var _enabled = true;
 // Default options.
 var _defaults = {
@@ -205,7 +201,6 @@ function containsAny(src, vals) {
 var ColursInstance = (function () {
     function ColursInstance(options) {
         var _this = this;
-        this.exp = ANSI_EXP;
         options = options || {};
         if (isUndefined(options.browser) && !isNode())
             options.browser = true;
@@ -373,7 +368,7 @@ var ColursInstance = (function () {
     ColursInstance.prototype.hasAnsi = function (val) {
         if (typeof val !== 'string')
             return false;
-        return ANSI_EXP.test(val);
+        return ansi_1.HAS_ANSI_EXP.test(val);
     };
     ColursInstance.prototype.applyAnsi = function (str, style, isBrowser) {
         var _this = this;
@@ -489,13 +484,13 @@ var ColursInstance = (function () {
      */
     ColursInstance.prototype.strip = function (obj) {
         if (typeof obj === 'string')
-            return obj.replace(stripexp_1.stripexp, '');
+            return obj.replace(ansi_1.STRIP_EXP, '');
         // Iterate array check if "replace" exists.
         if (Array.isArray(obj)) {
             var i = obj.length;
             while (i--) {
                 if (typeof obj[i].replace === 'function')
-                    obj[i] = obj[i].replace(stripexp_1.stripexp, '');
+                    obj[i] = obj[i].replace(ansi_1.STRIP_EXP, '');
             }
             return obj;
         }
@@ -507,7 +502,7 @@ var ColursInstance = (function () {
                     }
                     else {
                         if (typeof obj[prop].replace === 'function')
-                            obj[prop] = obj[prop].replace(stripexp_1.stripexp, '');
+                            obj[prop] = obj[prop].replace(ansi_1.STRIP_EXP, '');
                     }
                 }
             }

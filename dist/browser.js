@@ -1,19 +1,32 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * see https://github.com/chalk/ansi-regex
+ */
+var STRIP_PATTERN = [
+    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
+    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
+].join('|');
+exports.STRIP_EXP = new RegExp(STRIP_PATTERN, 'g');
+var HAS_ANSI_PATTERN = [
+    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
+    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
+].join('|');
+exports.HAS_ANSI_EXP = new RegExp(HAS_ANSI_PATTERN, 'g');
+
+},{}],2:[function(require,module,exports){
 (function (process){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./extens");
 var toHtml = require("ansi-html");
-var stripexp_1 = require("./stripexp");
+var ansi_1 = require("./ansi");
 // CONSTANTS & DEFAULTS
 var DOT_EXP = /\./g;
 var IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
     .toLowerCase()
-    .startsWith('xterm');
-var ANSI_PATTERN = [
-    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
-    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
-].join('|');
-var ANSI_EXP = new RegExp(ANSI_PATTERN, 'g');
+    .beginsWith('xterm');
 var _enabled = true;
 // Default options.
 var _defaults = {
@@ -207,7 +220,6 @@ function containsAny(src, vals) {
 var ColursInstance = (function () {
     function ColursInstance(options) {
         var _this = this;
-        this.exp = ANSI_EXP;
         options = options || {};
         if (isUndefined(options.browser) && !isNode())
             options.browser = true;
@@ -375,7 +387,7 @@ var ColursInstance = (function () {
     ColursInstance.prototype.hasAnsi = function (val) {
         if (typeof val !== 'string')
             return false;
-        return ANSI_EXP.test(val);
+        return ansi_1.HAS_ANSI_EXP.test(val);
     };
     ColursInstance.prototype.applyAnsi = function (str, style, isBrowser) {
         var _this = this;
@@ -491,13 +503,13 @@ var ColursInstance = (function () {
      */
     ColursInstance.prototype.strip = function (obj) {
         if (typeof obj === 'string')
-            return obj.replace(stripexp_1.stripexp, '');
+            return obj.replace(ansi_1.STRIP_EXP, '');
         // Iterate array check if "replace" exists.
         if (Array.isArray(obj)) {
             var i = obj.length;
             while (i--) {
                 if (typeof obj[i].replace === 'function')
-                    obj[i] = obj[i].replace(stripexp_1.stripexp, '');
+                    obj[i] = obj[i].replace(ansi_1.STRIP_EXP, '');
             }
             return obj;
         }
@@ -509,7 +521,7 @@ var ColursInstance = (function () {
                     }
                     else {
                         if (typeof obj[prop].replace === 'function')
-                            obj[prop] = obj[prop].replace(stripexp_1.stripexp, '');
+                            obj[prop] = obj[prop].replace(ansi_1.STRIP_EXP, '');
                     }
                 }
             }
@@ -558,7 +570,12 @@ var get = function (options) {
 exports.get = get;
 
 }).call(this,require('_process'))
-},{"./stripexp":3,"_process":5,"ansi-html":4}],2:[function(require,module,exports){
+},{"./ansi":1,"./extens":3,"_process":6,"ansi-html":5}],3:[function(require,module,exports){
+String.prototype.beginsWith = function (suffix) {
+    return this.indexOf(suffix, 0) === 0;
+};
+
+},{}],4:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -566,19 +583,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./colurs"));
 
-},{"./colurs":1}],3:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * see https://github.com/chalk/ansi-regex
- */
-var pattern = [
-    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\\u0007)',
-    '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))'
-].join('|');
-exports.stripexp = new RegExp(pattern, 'g');
-
-},{}],4:[function(require,module,exports){
+},{"./colurs":2}],5:[function(require,module,exports){
 'use strict'
 
 module.exports = ansiHTML
@@ -756,7 +761,7 @@ function _setTags (colors) {
 
 ansiHTML.reset()
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -942,4 +947,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[2]);
+},{}]},{},[4]);
