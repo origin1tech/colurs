@@ -62,26 +62,26 @@ let _defaults: IColurOptions = {
     bgCyan: [46, 49],
     bgWhite: [47, 49],
     bgGray: [47, 49], // fallback to white.
-    bgGrey: [47, 49]
+    bgGrey: [47, 49],
 
     // bright
-    // redBright: [91, 39],
-    // greenBright: [92, 39],
-    // yellowBright: [93, 39],
-    // blueBright: [94, 39],
-    // magentaBright: [95, 39],
-    // cyanBright: [96, 39],
-    // whiteBright: [97, 39],
+    redBright: [91, 39],
+    greenBright: [92, 39],
+    yellowBright: [93, 39],
+    blueBright: [94, 39],
+    magentaBright: [95, 39],
+    cyanBright: [96, 39],
+    whiteBright: [97, 39],
 
     // backgrounds bright
-    // bgBlackBright: [100, 49],
-    // bgRedBright: [101, 49],
-    // bgGreenBright: [102, 49],
-    // bgYellowBright: [103, 49],
-    // bgBlueBright: [104, 49],
-    // bgMagentaBright: [105, 49],
-    // bgCyanBright: [106, 49],
-    // bgWhiteBright: [107, 49]
+    bgBlackBright: [100, 49],
+    bgRedBright: [101, 49],
+    bgGreenBright: [102, 49],
+    bgYellowBright: [103, 49],
+    bgBlueBright: [104, 49],
+    bgMagentaBright: [105, 49],
+    bgCyanBright: [106, 49],
+    bgWhiteBright: [107, 49]
   },
 
   cssStyles: {
@@ -115,27 +115,27 @@ let _defaults: IColurOptions = {
     bgCyan: 'background: #00ffee;',
     bgWhite: 'background: #F0F0F0;',
     bgGray: 'background: #888;',
-    bgGrey: 'background: #888'
+    bgGrey: 'background: #888',
 
     // bright
-    // blackBright: 'color: #000;',
-    // redBright: 'color: #FF0000;',
-    // greenBright: 'color: #209805;',
-    // yellowBright: 'color: #e8bf03;',
-    // blueBright: 'color: #0000ff;',
-    // magentaBright: 'color: #ff00ff;',
-    // cyanBright: 'color: #00ffee;',
-    // whiteBright: 'color: #F0F0F0;',
+    blackBright: 'color: #000;',
+    redBright: 'color: #FF0000;',
+    greenBright: 'color: #209805;',
+    yellowBright: 'color: #e8bf03;',
+    blueBright: 'color: #0000ff;',
+    magentaBright: 'color: #ff00ff;',
+    cyanBright: 'color: #00ffee;',
+    whiteBright: 'color: #F0F0F0;',
 
     // background bright.
-    // bgBlackBright: 'background: #000;',
-    // bgRedBright: 'background: #FF0000;',
-    // bgGreeBrightn: 'background: #209805;',
-    // bgYellowBright: 'background: #e8bf03;',
-    // bgBlueBright: 'background: #0000ff;',
-    // bgMagentaBright: 'background: #ff00ff;',
-    // bgCyanBright: 'background: #00ffee;',
-    // bgWhiteBright: 'background: #F0F0F0;',
+    bgBlackBright: 'background: #000;',
+    bgRedBright: 'background: #FF0000;',
+    bgGreenBright: 'background: #209805;',
+    bgYellowBright: 'background: #e8bf03;',
+    bgBlueBright: 'background: #0000ff;',
+    bgMagentaBright: 'background: #ff00ff;',
+    bgCyanBright: 'background: #00ffee;',
+    bgWhiteBright: 'background: #F0F0F0;',
   }
 
 };
@@ -318,6 +318,40 @@ class ColursInstance implements IColurs {
 
   }
 
+  private styleInstance(colurs, style) {
+
+    const self = this;
+    const styles = [style];
+
+    function c(str) {
+
+      const args = [].slice.call(arguments, 1);
+      const isBrowser = (typeof args[args.length - 1] === 'boolean') ? args.pop() : undefined;
+      let result = colurs.applyAnsi(str, styles, isBrowser);
+
+      // Add any additional args to array.
+      if (Array.isArray(result))
+        return result.concat(args);
+
+      // Join any args add to string.
+      return (args.length ? result + (' ' + args.join(' ')) : result);
+
+    }
+
+    // Iterate the keys building getters.
+    _ansiKeys.forEach((k) => {
+      Object.defineProperty(c, k, {
+        get() {
+          styles.push(k);
+          return c;
+        }
+      });
+    });
+
+    return c;
+
+  }
+
   private log(type: string, ...args: any[]): void {
 
     let color = levelMap[type];
@@ -418,7 +452,7 @@ class ColursInstance implements IColurs {
    * @param str the string to be styled.
    * @param style the style or array of styles to apply.
    */
-  applyAnsi(str: any, style: string | string[]): string;
+  applyAnsi(str: any, style: string | string[]): any;
 
   /**
    * Style applies color and styles for browser.
@@ -427,10 +461,10 @@ class ColursInstance implements IColurs {
    * @param style the style or array of styles to apply.
    * @param isBrowser indicates browser css styles should be returned.
    */
-  applyAnsi(str: any, style: string | string[], isBrowser: boolean): any[];
+  applyAnsi(str: any, style: string | string[], isBrowser: boolean): any | any[];
 
 
-  applyAnsi(str: any, style: string | string[], isBrowser?: boolean): string | any[] {
+  applyAnsi(str: any, style: string | string[], isBrowser?: boolean): any | any[] {
 
     isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
 

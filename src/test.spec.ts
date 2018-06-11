@@ -5,11 +5,11 @@ const expect = chai.expect;
 const should = chai.should;
 const assert = chai.assert;
 
-import { get, Colurs } from './';
+import { Colurs } from './';
 
-const colurs = get();
+const colurs = new Colurs();
 
-const exp = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
+const isAnsi = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 
 describe('Colurs', () => {
 
@@ -19,7 +19,7 @@ describe('Colurs', () => {
 
   it('should create ansi colored string.', () => {
     const ansi = colurs.underline.gray('I am underlined gray');
-    assert.equal(exp.test(<string>ansi), true);
+    assert.equal(isAnsi.test(<string>ansi), true);
   });
 
   it('should convert ansi colored string to html.', () => {
@@ -32,9 +32,9 @@ describe('Colurs', () => {
 
   it('should strip color from value.', () => {
     const ansi = colurs.underline.gray('I am underlined gray');
-    assert.equal(exp.test(<string>ansi), true);
+    assert.equal(isAnsi.test(<string>ansi), true);
     const stripped = colurs.strip(ansi);
-    assert.equal(exp.test(stripped), false);
+    assert.equal(isAnsi.test(stripped), false);
   });
 
   it('should create an instance of Colurs', () => {
@@ -45,19 +45,19 @@ describe('Colurs', () => {
   it('should create an instance of Colurs where colorization is disabled.', () => {
     const _colurs = new Colurs({ enabled: false });
     const ansi = _colurs.bold.red('I am bold red.');
-    assert.equal(exp.test(<string>ansi), false);
+    assert.equal(isAnsi.test(<string>ansi), false);
   });
 
   it('should return array for console.log colorization.', () => {
     const _colurs = new Colurs({ browser: true });
-    const styles = _colurs.bold.red('I am bold red.');
+    const styles = _colurs.bold.red('I am bold red.', true);
     assert.deepEqual(['%c I am bold red.', 'font-weight: bold; color: #FF0000;'], styles);
   });
 
   it('should create an instance of Colurs then use setOption to disable colorization.', () => {
     colurs.setOption('enabled', false);
     const ansi = colurs.bold.red('I am bold red.');
-    assert.equal(exp.test(<string>ansi), false);
+    assert.equal(isAnsi.test(<string>ansi), false);
   });
 
   it('should change the default ansi style for the color red.', () => {

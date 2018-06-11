@@ -1,7 +1,7 @@
 export interface IColursChain extends IColursStyle {
     (): boolean;
-    (str: string, isBrowser: boolean): string | any[];
-    (str: string, ...args: any[]): string | any[];
+    (str: any, ...args: any[]): any;
+    (str: any, isBrowser: boolean): any[];
 }
 export interface IColursStyle {
     reset?: IColursChain;
@@ -32,6 +32,21 @@ export interface IColursStyle {
     bgWhite?: IColursChain;
     bgGray?: IColursChain;
     bgGrey?: IColursChain;
+    redBright?: IColursChain;
+    greenBright?: IColursChain;
+    yellowBright?: IColursChain;
+    blueBright?: IColursChain;
+    magentaBright?: IColursChain;
+    cyanBright?: IColursChain;
+    whiteBright?: IColursChain;
+    bgBlackBright?: IColursChain;
+    bgRedBright?: IColursChain;
+    bgGreenBright?: IColursChain;
+    bgYellowBright?: IColursChain;
+    bgBlueBright?: IColursChain;
+    bgMagentaBright?: IColursChain;
+    bgCyanBright?: IColursChain;
+    bgWhiteBright?: IColursChain;
 }
 export declare type AnsiTuple = [number, number];
 export interface IAnsiStyles {
@@ -63,6 +78,21 @@ export interface IAnsiStyles {
     bgWhite?: AnsiTuple;
     bgGray?: AnsiTuple;
     bgGrey?: AnsiTuple;
+    redBright: AnsiTuple;
+    greenBright: AnsiTuple;
+    yellowBright: AnsiTuple;
+    blueBright: AnsiTuple;
+    magentaBright: AnsiTuple;
+    cyanBright: AnsiTuple;
+    whiteBright: AnsiTuple;
+    bgBlackBright?: AnsiTuple;
+    bgRedBright?: AnsiTuple;
+    bgGreenBright?: AnsiTuple;
+    bgYellowBright?: AnsiTuple;
+    bgBlueBright?: AnsiTuple;
+    bgMagentaBright?: AnsiTuple;
+    bgCyanBright?: AnsiTuple;
+    bgWhiteBright?: AnsiTuple;
 }
 export interface ICssStyles {
     bold?: string;
@@ -91,6 +121,22 @@ export interface ICssStyles {
     bgWhite?: string;
     bgGray?: string;
     bgGrey?: string;
+    blackBright: string;
+    redBright: string;
+    greenBright: string;
+    yellowBright: string;
+    blueBright: string;
+    magentaBright: string;
+    cyanBright: string;
+    whiteBright: string;
+    bgBlackBright?: string;
+    bgRedBright?: string;
+    bgGreenBright?: string;
+    bgYellowBright?: string;
+    bgBlueBright?: string;
+    bgMagentaBright?: string;
+    bgCyanBright?: string;
+    bgWhiteBright?: string;
 }
 export interface IColurOptions {
     enabled?: boolean;
@@ -106,6 +152,10 @@ export interface IColurs extends IColursStyle {
     setOption?(key: any, val: any): void;
     strip?(obj: any): any;
     hasAnsi?(val: any): boolean;
+    applyAnsi?(str: string, style: string): string;
+    applyAnsi?(str: string, style: string[]): string;
+    applyAnsi?(str: string, style: string, isBrowser: boolean): any[];
+    applyAnsi?(str: string, style: string[], isBrowser: boolean): any[];
     applyAnsi?(str: string, style: string | string[], isBrowser?: boolean): string | any[];
     applyHtml?(str: string, style: string | string[]): string;
     toHtml?(str: string): string;
