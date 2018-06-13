@@ -2,151 +2,25 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./extens");
 var toHtml = require("ansi-html");
-var ansi_1 = require("./ansi");
+var constants_1 = require("./constants");
 // CONSTANTS & DEFAULTS
 var DOT_EXP = /\./g;
 var IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
     .toLowerCase()
     .beginsWith('xterm');
-var _enabled = true;
 // Default options.
-var _defaults = {
+var DEFAULTS = {
     enabled: true,
     browser: false,
-    ansiStyles: {
-        // modifiers
-        reset: [0, 0],
-        bold: [1, 22],
-        italic: [3, 23],
-        underline: [4, 24],
-        inverse: [7, 27],
-        dim: [2, 22],
-        hidden: [8, 28],
-        strikethrough: [9, 29],
-        // colors
-        black: [30, 39],
-        red: [31, 39],
-        green: [32, 39],
-        yellow: [33, 39],
-        blue: [34, 39],
-        magenta: [35, 39],
-        cyan: [36, 39],
-        white: [37, 39],
-        grey: [90, 39],
-        gray: [90, 39],
-        // backgrounds
-        bgBlack: [40, 49],
-        bgRed: [41, 49],
-        bgGreen: [42, 49],
-        bgYellow: [43, 49],
-        bgBlue: [44, 49],
-        bgMagenta: [45, 49],
-        bgCyan: [46, 49],
-        bgWhite: [47, 49],
-        bgGray: [47, 49],
-        bgGrey: [47, 49],
-        // bright
-        redBright: [91, 39],
-        greenBright: [92, 39],
-        yellowBright: [93, 39],
-        blueBright: [94, 39],
-        magentaBright: [95, 39],
-        cyanBright: [96, 39],
-        whiteBright: [97, 39],
-        // backgrounds bright
-        bgBlackBright: [100, 49],
-        bgRedBright: [101, 49],
-        bgGreenBright: [102, 49],
-        bgYellowBright: [103, 49],
-        bgBlueBright: [104, 49],
-        bgMagentaBright: [105, 49],
-        bgCyanBright: [106, 49],
-        bgWhiteBright: [107, 49]
-    },
-    cssStyles: {
-        // modifiers
-        bold: 'font-weight: bold;',
-        italic: 'font-style: italic;',
-        underline: 'text-decoration: underline;',
-        dim: 'opacity:0.5;',
-        hidden: 'display: none;',
-        strikethrough: 'text-decoration: line-through;',
-        // colors
-        black: 'color: #000;',
-        red: 'color: #FF0000;',
-        green: 'color: #209805;',
-        yellow: 'color: #e8bf03;',
-        blue: 'color: #0000ff;',
-        magenta: 'color: #ff00ff;',
-        cyan: 'color: #00ffee;',
-        white: 'color: #F0F0F0;',
-        grey: 'color: #888;',
-        gray: 'color: #888;',
-        // background.
-        bgBlack: 'background: #000;',
-        bgRed: 'background: #FF0000;',
-        bgGreen: 'background: #209805;',
-        bgYellow: 'background: #e8bf03;',
-        bgBlue: 'background: #0000ff;',
-        bgMagenta: 'background: #ff00ff;',
-        bgCyan: 'background: #00ffee;',
-        bgWhite: 'background: #F0F0F0;',
-        bgGray: 'background: #888;',
-        bgGrey: 'background: #888',
-        // bright
-        blackBright: 'color: #000;',
-        redBright: 'color: #FF0000;',
-        greenBright: 'color: #209805;',
-        yellowBright: 'color: #e8bf03;',
-        blueBright: 'color: #0000ff;',
-        magentaBright: 'color: #ff00ff;',
-        cyanBright: 'color: #00ffee;',
-        whiteBright: 'color: #F0F0F0;',
-        // background bright.
-        bgBlackBright: 'background: #000;',
-        bgRedBright: 'background: #FF0000;',
-        bgGreenBright: 'background: #209805;',
-        bgYellowBright: 'background: #e8bf03;',
-        bgBlueBright: 'background: #0000ff;',
-        bgMagentaBright: 'background: #ff00ff;',
-        bgCyanBright: 'background: #00ffee;',
-        bgWhiteBright: 'background: #F0F0F0;',
-    }
+    ansiStyles: constants_1.ANSI_STYLES,
+    cssStyles: constants_1.CSS_STYLES
 };
-// Array of color names.
-var _colorNames = [
-    'black',
-    'red',
-    'green',
-    'yellow',
-    'blue',
-    'magenta',
-    'cyan',
-    'white',
-    'grey',
-    'gray',
-];
-// Array of background color names.
-var _bgColorNames = [
-    'bgBlack',
-    'bgRed',
-    'bgGreen',
-    'bgYellow',
-    'bgBlue',
-    'bgMagenta',
-    'bgCyan',
-    'bgWhite',
-    'bgGray',
-    'bgGrey'
-];
 var levelMap = {
     error: 'red',
     warn: 'yellow',
     info: 'cyan'
 };
-// Get array of each prop.
-var _ansiKeys = Object.keys(_defaults.ansiStyles);
-var prefix = '\x1B['; // '\u001B';
+var PREFIX = '\x1B['; // '\u001B';
 // HELPER METHODS
 function isNode() {
     if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
@@ -160,29 +34,6 @@ function isPlainObject(val) {
 }
 function isUndefined(val) {
     return (typeof val === 'undefined');
-}
-// Don't be foolish and use this elsewhere
-// suits purpose here but won't work for
-// all cases!
-function extend(obj) {
-    var args = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        args[_i - 1] = arguments[_i];
-    }
-    obj = obj || {};
-    args.forEach(function (o) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (isPlainObject(o[p])) {
-                    obj[p] = extend(obj[p], o[p]);
-                }
-                else {
-                    obj[p] = o[p];
-                }
-            }
-        }
-    });
-    return obj;
 }
 function contains(arr, val) {
     if (arr.indexOf(val) !== -1)
@@ -204,10 +55,10 @@ var ColursInstance = (function () {
         options = options || {};
         if (isUndefined(options.browser) && !isNode())
             options.browser = true;
-        this.options = extend({}, _defaults, options);
+        this.options = Object.assign({}, DEFAULTS, options);
         // Iterate ansi keys and create
         // colurs styling instance.
-        _ansiKeys.forEach(function (k) {
+        constants_1.ANSI_STYLE_NAMES_ALL.forEach(function (k) {
             Object.defineProperty(_this, k, {
                 get: function () {
                     return this.styleInstance(this, k);
@@ -231,7 +82,7 @@ var ColursInstance = (function () {
             if (style === 'dim')
                 return '';
         }
-        return style ? "" + prefix + this.options.ansiStyles[style][0] + "m" : '';
+        return style ? "" + PREFIX + this.options.ansiStyles[style][0] + "m" : '';
     };
     /**
      * End
@@ -240,7 +91,7 @@ var ColursInstance = (function () {
      * @param style the style to be applied.
      */
     ColursInstance.prototype.end = function (style) {
-        return style ? "" + prefix + this.options.ansiStyles[style][1] + "m" : '';
+        return style ? "" + PREFIX + this.options.ansiStyles[style][1] + "m" : '';
     };
     ColursInstance.prototype.getInverse = function (str, def) {
         var inv;
@@ -278,7 +129,7 @@ var ColursInstance = (function () {
             return (args.length ? result + (' ' + args.join(' ')) : result);
         }
         // Iterate the keys building getters.
-        _ansiKeys.forEach(function (k) {
+        constants_1.ANSI_STYLE_NAMES_ALL.forEach(function (k) {
             Object.defineProperty(c, k, {
                 get: function () {
                     styles.push(k);
@@ -332,13 +183,13 @@ var ColursInstance = (function () {
                     var keys = Object.keys(obj[p]);
                     keys.forEach(function (k) {
                         if (p === 'ansiStyles') {
-                            if (!contains(_ansiKeys, k)) {
+                            if (!contains(constants_1.ANSI_STYLE_NAMES_ALL, k)) {
                                 _this.log('warn', "invalid ansi style " + k + " was ignored.");
                                 delete obj[p][k];
                             }
                         }
                         else {
-                            if (!contains(_ansiKeys, k)) {
+                            if (!contains(constants_1.ANSI_STYLE_NAMES_ALL, k)) {
                                 _this.log('warn', "invalid css style " + k + " was ignored.");
                                 delete obj[p][k];
                             }
@@ -346,10 +197,10 @@ var ColursInstance = (function () {
                     });
                     // Ensure valid styles ansi styles.
                     if (p === 'ansiStyles')
-                        obj[p] = extend({}, this_1.options.ansiStyles, obj[p]);
+                        obj[p] = Object.assign({}, this_1.options.ansiStyles, obj[p]);
                     // Ensure valid css styles.
                     if (p === 'cssStyles')
-                        obj[p] = extend({}, this_1.options.cssStyles, obj[p]);
+                        obj[p] = Object.assign({}, this_1.options.cssStyles, obj[p]);
                 }
                 this_1.options[p] = obj[p];
             }
@@ -368,8 +219,11 @@ var ColursInstance = (function () {
     ColursInstance.prototype.hasAnsi = function (val) {
         if (typeof val !== 'string')
             return false;
-        return ansi_1.HAS_ANSI_EXP.test(val);
+        return constants_1.HAS_ANSI_EXP.test(val);
     };
+    /**
+     *
+     */
     ColursInstance.prototype.applyAnsi = function (str, style, isBrowser) {
         var _this = this;
         isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
@@ -385,8 +239,8 @@ var ColursInstance = (function () {
             else
                 style = [style];
         }
-        var hasColor = containsAny(_colorNames, style);
-        var hasBgColor = containsAny(_bgColorNames, style);
+        var hasColor = containsAny(constants_1.ANSI_STYLE_NAMES, style);
+        var hasBgColor = containsAny(constants_1.ANSI_STYLE_BG_NAMES, style);
         // When Browser return styles for formatting
         // with console.log.
         if (isBrowser)
@@ -439,7 +293,7 @@ var ColursInstance = (function () {
     ColursInstance.prototype.applyCss = function (str, style) {
         var _this = this;
         var _styles = [];
-        if (_enabled === false)
+        if (this.options.enabled === false)
             return [str];
         // Ensure style is an array.
         if (!Array.isArray(style)) {
@@ -450,8 +304,8 @@ var ColursInstance = (function () {
         }
         // Check if we should inverse colors.
         if (~style.indexOf('inverse')) {
-            var hasColor = containsAny(_colorNames, style);
-            var hasBgColor = containsAny(_bgColorNames, style);
+            var hasColor = containsAny(constants_1.ANSI_STYLE_NAMES, style);
+            var hasBgColor = containsAny(constants_1.ANSI_STYLE_BG_NAMES, style);
             // If has color or bgColor inverse
             // it then remove from array.
             if (hasColor) {
@@ -484,13 +338,13 @@ var ColursInstance = (function () {
      */
     ColursInstance.prototype.strip = function (obj) {
         if (typeof obj === 'string')
-            return obj.replace(ansi_1.STRIP_EXP, '');
+            return obj.replace(constants_1.STRIP_EXP, '');
         // Iterate array check if "replace" exists.
         if (Array.isArray(obj)) {
             var i = obj.length;
             while (i--) {
                 if (typeof obj[i].replace === 'function')
-                    obj[i] = obj[i].replace(ansi_1.STRIP_EXP, '');
+                    obj[i] = obj[i].replace(constants_1.STRIP_EXP, '');
             }
             return obj;
         }
@@ -502,7 +356,7 @@ var ColursInstance = (function () {
                     }
                     else {
                         if (typeof obj[prop].replace === 'function')
-                            obj[prop] = obj[prop].replace(ansi_1.STRIP_EXP, '');
+                            obj[prop] = obj[prop].replace(constants_1.STRIP_EXP, '');
                     }
                 }
             }

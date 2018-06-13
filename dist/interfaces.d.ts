@@ -31,6 +31,7 @@ export interface IColursStyle {
     bgWhite?: IColursChain;
     bgGray?: IColursChain;
     bgGrey?: IColursChain;
+    blackBright?: IColursChain;
     redBright?: IColursChain;
     greenBright?: IColursChain;
     yellowBright?: IColursChain;
@@ -47,7 +48,7 @@ export interface IColursStyle {
     bgCyanBright?: IColursChain;
     bgWhiteBright?: IColursChain;
 }
-export declare type AnsiTuple = [number, number];
+export declare type AnsiTuple = number[];
 export interface IAnsiStyles {
     reset?: AnsiTuple;
     bold?: AnsiTuple;
@@ -147,18 +148,99 @@ export interface IColursInstance {
     new (options?: IColurOptions): IColurs;
 }
 export interface IColurs extends IColursStyle {
+    /**
+     * Colurs options.
+     */
     options?: IColurOptions;
+    /**
+     * Enables setting options after init.
+     *
+     * @param key the key to set or object.
+     * @param val the value to set if key is not an object.
+     */
     setOption?(key: any, val: any): void;
-    strip?(obj: any): any;
+    /**
+     * Strips ansi styles from value.
+     *
+     * @param val the value to strip ansi styling from.
+     */
+    strip?(val: any): any;
+    /**
+     * Checks if value has any ansi styling.
+     *
+     * @param val the value to inspect.
+     */
     hasAnsi?(val: any): boolean;
-    applyAnsi?(str: string, style: string): string;
-    applyAnsi?(str: string, style: string[]): string;
-    applyAnsi?(str: string, style: string, isBrowser: boolean): any[];
-    applyAnsi?(str: string, style: string[], isBrowser: boolean): any[];
-    applyAnsi?(str: string, style: string | string[], isBrowser?: boolean): string | any[];
-    applyHtml?(str: string, style: string | string[]): string;
+    /**
+     * Apply ansi styling to value.
+     *
+     * @example .applyAnsi('foo', 'red');
+     *
+     * @param str the value to be styled.
+     * @param style the style to be applied.
+     */
+    applyAnsi?(str: string, style: any): string;
+    /**
+     * Apply ansi styling to value.
+     *
+     * @example .applyAnsi('foo', ['red', 'bold']);
+     *
+     * @param str the value to be styled.
+     * @param styles the styles to be applied.
+     */
+    applyAnsi?(str: string, styles: any[]): string;
+    /**
+     * Apply ansi styling to value.
+     *
+     * @example .applyAnsi('foo', 'red', true);
+     *
+     * @param str the value to be styled.
+     * @param style the style to be applied.
+     * @param isBrowser allows override to style for browser.
+     */
+    applyAnsi?(str: string, style: any, isBrowser: boolean): any[];
+    /**
+     * Apply ansi styling to value.
+     *
+     * @example .applyAnsi('foo', ['red', 'bold'], true);
+     *
+     * @param str the value to be styled.
+     * @param styles the styles to be applied.
+     * @param isBrowser allows override to style for browser.
+     */
+    applyAnsi?(str: string, styles: any[], isBrowser: boolean): any[];
+    applyAnsi?(str: string, style: any | any[], isBrowser?: boolean): string | any[];
+    /**
+     * Applies styling for html output.
+     *
+     * @param str the value to apply html styles to.
+     * @param style the style or styles to be applied.
+     */
+    applyHtml?(str: any, style: any | any[]): string;
+    /**
+     * Converts to html styling from ansi, simply a
+     * convenience wrapper to ansi-html module.
+     *
+     * @param str the value to convert.
+     */
     toHtml?(str: string): string;
+    /**
+     * Applies styling for css.
+     *
+     * @param str the value to apply css styling to.
+     * @param style the style or styles to apply.
+     */
     applyCss?(str: string, style: string | string[]): any[];
+    /**
+     * Toggles enable/disable of browser mode.
+     *
+     * @param state when true using browser mode.
+     */
     browser?(state?: boolean): boolean;
+    /**
+     * Toggles state when false colorizing is disabled.
+     *
+     * @param state toggles the enabled state.
+     */
     enabled?(state?: boolean): boolean;
 }

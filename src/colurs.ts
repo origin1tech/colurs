@@ -1,9 +1,9 @@
 import './extens';
-import { IColurs, IColursInstance, IColurOptions } from './interfaces';
+import { IColurs, IColursInstance, IColurOptions, IAnsiStyles } from './interfaces';
 import * as toHtml from 'ansi-html';
-import { STRIP_EXP, HAS_ANSI_EXP } from './ansi';
+import { STRIP_EXP, HAS_ANSI_EXP, ANSI_STYLE_NAMES as STYLE_NAMES, ANSI_STYLE_NAMES_ALL as ANSI_KEYS, ANSI_STYLES, CSS_STYLE_NAMES, CSS_STYLES, ANSI_STYLE_BG_NAMES as BG_STYLE_NAMES } from './constants';
 
-// prevents Typescript from complaining.
+// declare these for build.
 declare var window;
 declare var module;
 
@@ -14,153 +14,13 @@ const IS_WIN_TERM = process.platform === 'win32' && !(process.env.TERM || '')
   .toLowerCase()
   .beginsWith('xterm');
 
-let _enabled = true;
-
 // Default options.
-let _defaults: IColurOptions = {
-
+const DEFAULTS: IColurOptions = {
   enabled: true,
   browser: false,
-
-  ansiStyles: {
-
-    // modifiers
-    reset: [0, 0],
-    bold: [1, 22],
-    italic: [3, 23],
-    underline: [4, 24],
-    inverse: [7, 27],
-    dim: [2, 22],
-    hidden: [8, 28],
-    strikethrough: [9, 29],
-
-    // colors
-    black: [30, 39],
-    red: [31, 39],
-    green: [32, 39],
-    yellow: [33, 39],
-    blue: [34, 39],
-    magenta: [35, 39],
-    cyan: [36, 39],
-    white: [37, 39],
-    grey: [90, 39],
-    gray: [90, 39],
-
-    // backgrounds
-    bgBlack: [40, 49],
-    bgRed: [41, 49],
-    bgGreen: [42, 49],
-    bgYellow: [43, 49],
-    bgBlue: [44, 49],
-    bgMagenta: [45, 49],
-    bgCyan: [46, 49],
-    bgWhite: [47, 49],
-    bgGray: [47, 49], // fallback to white.
-    bgGrey: [47, 49],
-
-    // bright
-    redBright: [91, 39],
-    greenBright: [92, 39],
-    yellowBright: [93, 39],
-    blueBright: [94, 39],
-    magentaBright: [95, 39],
-    cyanBright: [96, 39],
-    whiteBright: [97, 39],
-
-    // backgrounds bright
-    bgBlackBright: [100, 49],
-    bgRedBright: [101, 49],
-    bgGreenBright: [102, 49],
-    bgYellowBright: [103, 49],
-    bgBlueBright: [104, 49],
-    bgMagentaBright: [105, 49],
-    bgCyanBright: [106, 49],
-    bgWhiteBright: [107, 49]
-  },
-
-  cssStyles: {
-    // modifiers
-    bold: 'font-weight: bold;',
-    italic: 'font-style: italic;',
-    underline: 'text-decoration: underline;',
-    dim: 'opacity:0.5;',
-    hidden: 'display: none;',
-    strikethrough: 'text-decoration: line-through;',
-
-    // colors
-    black: 'color: #000;',
-    red: 'color: #FF0000;',
-    green: 'color: #209805;',
-    yellow: 'color: #e8bf03;',
-    blue: 'color: #0000ff;',
-    magenta: 'color: #ff00ff;',
-    cyan: 'color: #00ffee;',
-    white: 'color: #F0F0F0;',
-    grey: 'color: #888;',
-    gray: 'color: #888;',
-
-    // background.
-    bgBlack: 'background: #000;',
-    bgRed: 'background: #FF0000;',
-    bgGreen: 'background: #209805;',
-    bgYellow: 'background: #e8bf03;',
-    bgBlue: 'background: #0000ff;',
-    bgMagenta: 'background: #ff00ff;',
-    bgCyan: 'background: #00ffee;',
-    bgWhite: 'background: #F0F0F0;',
-    bgGray: 'background: #888;',
-    bgGrey: 'background: #888',
-
-    // bright
-    blackBright: 'color: #000;',
-    redBright: 'color: #FF0000;',
-    greenBright: 'color: #209805;',
-    yellowBright: 'color: #e8bf03;',
-    blueBright: 'color: #0000ff;',
-    magentaBright: 'color: #ff00ff;',
-    cyanBright: 'color: #00ffee;',
-    whiteBright: 'color: #F0F0F0;',
-
-    // background bright.
-    bgBlackBright: 'background: #000;',
-    bgRedBright: 'background: #FF0000;',
-    bgGreenBright: 'background: #209805;',
-    bgYellowBright: 'background: #e8bf03;',
-    bgBlueBright: 'background: #0000ff;',
-    bgMagentaBright: 'background: #ff00ff;',
-    bgCyanBright: 'background: #00ffee;',
-    bgWhiteBright: 'background: #F0F0F0;',
-  }
-
+  ansiStyles: ANSI_STYLES,
+  cssStyles: CSS_STYLES
 };
-
-// Array of color names.
-let _colorNames = [
-  'black',
-  'red',
-  'green',
-  'yellow',
-  'blue',
-  'magenta',
-  'cyan',
-  'white',
-  'grey',
-  'gray',
-];
-
-// Array of background color names.
-let _bgColorNames = [
-  'bgBlack',
-  'bgRed',
-  'bgGreen',
-  'bgYellow',
-  'bgBlue',
-  'bgMagenta',
-  'bgCyan',
-  'bgWhite',
-  'bgGray',
-  'bgGrey'
-];
 
 let levelMap = {
   error: 'red',
@@ -168,9 +28,7 @@ let levelMap = {
   info: 'cyan'
 };
 
-// Get array of each prop.
-let _ansiKeys = Object.keys(_defaults.ansiStyles);
-let prefix = '\x1B['; // '\u001B';
+const PREFIX = '\x1B['; // '\u001B';
 
 // HELPER METHODS
 
@@ -188,26 +46,6 @@ function isPlainObject(val: any) {
 
 function isUndefined(val: any) {
   return (typeof val === 'undefined');
-}
-
-// Don't be foolish and use this elsewhere
-// suits purpose here but won't work for
-// all cases!
-function extend(obj, ...args: any[]) {
-  obj = obj || {};
-  args.forEach((o) => {
-    for (let p in o) {
-      if (o.hasOwnProperty(p)) {
-        if (isPlainObject(o[p])) {
-          obj[p] = extend(obj[p], o[p]);
-        }
-        else {
-          obj[p] = o[p];
-        }
-      }
-    }
-  });
-  return obj;
 }
 
 function contains(arr: string[], val: string): string {
@@ -236,11 +74,11 @@ class ColursInstance implements IColurs {
     if (isUndefined(options.browser) && !isNode())
       options.browser = true;
 
-    this.options = extend({}, _defaults, options);
+    this.options = Object.assign({}, DEFAULTS, options);
 
     // Iterate ansi keys and create
     // colurs styling instance.
-    _ansiKeys.forEach((k) => {
+    ANSI_KEYS.forEach((k) => {
       Object.defineProperty(this, k, {
         get() {
           return this.styleInstance(this, k);
@@ -267,7 +105,7 @@ class ColursInstance implements IColurs {
       if (style === 'dim')
         return '';
     }
-    return style ? `${prefix}${this.options.ansiStyles[style][0]}m` : '';
+    return style ? `${PREFIX}${this.options.ansiStyles[style][0]}m` : '';
   }
 
   /**
@@ -277,7 +115,7 @@ class ColursInstance implements IColurs {
    * @param style the style to be applied.
    */
   private end(style: string): string {
-    return style ? `${prefix}${this.options.ansiStyles[style][1]}m` : '';
+    return style ? `${PREFIX}${this.options.ansiStyles[style][1]}m` : '';
   }
 
   private getInverse(str: string, def?: string): string {
@@ -332,7 +170,7 @@ class ColursInstance implements IColurs {
     }
 
     // Iterate the keys building getters.
-    _ansiKeys.forEach((k) => {
+    ANSI_KEYS.forEach((k) => {
       Object.defineProperty(c, k, {
         get() {
           styles.push(k);
@@ -394,14 +232,14 @@ class ColursInstance implements IColurs {
           keys.forEach((k) => {
 
             if (p === 'ansiStyles') {
-              if (!contains(_ansiKeys, k)) {
+              if (!contains(ANSI_KEYS, k)) {
                 this.log('warn', `invalid ansi style ${k} was ignored.`);
                 delete obj[p][k];
               }
             }
 
             else {
-              if (!contains(_ansiKeys, k)) {
+              if (!contains(ANSI_KEYS, k)) {
                 this.log('warn', `invalid css style ${k} was ignored.`);
                 delete obj[p][k];
               }
@@ -411,11 +249,11 @@ class ColursInstance implements IColurs {
 
           // Ensure valid styles ansi styles.
           if (p === 'ansiStyles')
-            obj[p] = extend({}, this.options.ansiStyles, obj[p]);
+            obj[p] = Object.assign({}, this.options.ansiStyles, obj[p]);
 
           // Ensure valid css styles.
           if (p === 'cssStyles')
-            obj[p] = extend({}, this.options.cssStyles, obj[p]);
+            obj[p] = Object.assign({}, this.options.cssStyles, obj[p]);
 
         }
 
@@ -440,24 +278,9 @@ class ColursInstance implements IColurs {
   }
 
   /**
-   * Style applies color and styles.
    *
-   * @param str the string to be styled.
-   * @param style the style or array of styles to apply.
    */
-  applyAnsi(str: any, style: string | string[]): any;
-
-  /**
-   * Style applies color and styles for browser.
-   *
-   * @param str the string to be styled.
-   * @param style the style or array of styles to apply.
-   * @param isBrowser indicates browser css styles should be returned.
-   */
-  applyAnsi(str: any, style: string | string[], isBrowser: boolean): any | any[];
-
-
-  applyAnsi(str: any, style: string | string[], isBrowser?: boolean): any | any[] {
+  applyAnsi(str: any, style: any | any[], isBrowser?: boolean): any | any[] {
 
     isBrowser = isUndefined(isBrowser) ? this.options.browser : isBrowser;
 
@@ -477,8 +300,8 @@ class ColursInstance implements IColurs {
 
     }
 
-    const hasColor = containsAny(_colorNames, style);
-    const hasBgColor = containsAny(_bgColorNames, style);
+    const hasColor = containsAny(STYLE_NAMES, style);
+    const hasBgColor = containsAny(BG_STYLE_NAMES, style);
 
     // When Browser return styles for formatting
     // with console.log.
@@ -546,7 +369,7 @@ class ColursInstance implements IColurs {
 
     let _styles: any = [];
 
-    if (_enabled === false)
+    if (this.options.enabled === false)
       return [str];
 
     // Ensure style is an array.
@@ -562,8 +385,8 @@ class ColursInstance implements IColurs {
     // Check if we should inverse colors.
     if (~style.indexOf('inverse')) {
 
-      const hasColor = containsAny(_colorNames, style);
-      const hasBgColor = containsAny(_bgColorNames, style);
+      const hasColor = containsAny(STYLE_NAMES, style);
+      const hasBgColor = containsAny(BG_STYLE_NAMES, style);
 
       // If has color or bgColor inverse
       // it then remove from array.
