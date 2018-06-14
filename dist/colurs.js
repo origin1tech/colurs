@@ -35,6 +35,26 @@ function isPlainObject(val) {
 function isUndefined(val) {
     return (typeof val === 'undefined');
 }
+function assign(target) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    target = target || {};
+    sources.forEach(function (o) {
+        for (var p in o) {
+            if (o.hasOwnProperty(p)) {
+                if (typeof o[p] === 'object') {
+                    target[p] = assign(target[p], o[p]);
+                }
+                else {
+                    target[p] = o[p];
+                }
+            }
+        }
+    });
+    return target;
+}
 function contains(arr, val) {
     if (arr.indexOf(val) !== -1)
         return val;
@@ -55,7 +75,7 @@ var ColursInstance = (function () {
         options = options || {};
         if (isUndefined(options.browser) && !isNode())
             options.browser = true;
-        this.options = Object.assign({}, DEFAULTS, options);
+        this.options = assign({}, DEFAULTS, options);
         // Iterate ansi keys and create
         // colurs styling instance.
         constants_1.ANSI_STYLE_NAMES_ALL.forEach(function (k) {
@@ -197,10 +217,10 @@ var ColursInstance = (function () {
                     });
                     // Ensure valid styles ansi styles.
                     if (p === 'ansiStyles')
-                        obj[p] = Object.assign({}, this_1.options.ansiStyles, obj[p]);
+                        obj[p] = assign({}, this_1.options.ansiStyles, obj[p]);
                     // Ensure valid css styles.
                     if (p === 'cssStyles')
-                        obj[p] = Object.assign({}, this_1.options.cssStyles, obj[p]);
+                        obj[p] = assign({}, this_1.options.cssStyles, obj[p]);
                 }
                 this_1.options[p] = obj[p];
             }

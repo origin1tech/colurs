@@ -48,6 +48,23 @@ function isUndefined(val: any) {
   return (typeof val === 'undefined');
 }
 
+function assign(target, ...sources) {
+  target = target || {};
+  sources.forEach((o) => {
+    for (const p in o) {
+      if (o.hasOwnProperty(p)) {
+        if (typeof o[p] === 'object') {
+          target[p] = assign(target[p], o[p]);
+        }
+        else {
+          target[p] = o[p];
+        }
+      }
+    }
+  });
+  return target;
+}
+
 function contains(arr: string[], val: string): string {
   if (arr.indexOf(val) !== -1)
     return val;
@@ -74,7 +91,7 @@ class ColursInstance implements IColurs {
     if (isUndefined(options.browser) && !isNode())
       options.browser = true;
 
-    this.options = Object.assign({}, DEFAULTS, options);
+    this.options = assign({}, DEFAULTS, options);
 
     // Iterate ansi keys and create
     // colurs styling instance.
@@ -249,11 +266,11 @@ class ColursInstance implements IColurs {
 
           // Ensure valid styles ansi styles.
           if (p === 'ansiStyles')
-            obj[p] = Object.assign({}, this.options.ansiStyles, obj[p]);
+            obj[p] = assign({}, this.options.ansiStyles, obj[p]);
 
           // Ensure valid css styles.
           if (p === 'cssStyles')
-            obj[p] = Object.assign({}, this.options.cssStyles, obj[p]);
+            obj[p] = assign({}, this.options.cssStyles, obj[p]);
 
         }
 
