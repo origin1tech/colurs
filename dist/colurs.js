@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./extens");
 var toHtml = require("ansi-html");
+var assign = require("object-assign");
 var constants_1 = require("./constants");
 // CONSTANTS & DEFAULTS
 var DOT_EXP = /\./g;
@@ -20,7 +21,7 @@ var levelMap = {
     warn: 'yellow',
     info: 'cyan'
 };
-var PREFIX = '\x1B['; // '\u001B';
+var PREFIX = '\x1B[';
 // HELPER METHODS
 function isNode() {
     if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
@@ -34,26 +35,6 @@ function isPlainObject(val) {
 }
 function isUndefined(val) {
     return (typeof val === 'undefined');
-}
-function assign(target) {
-    var sources = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        sources[_i - 1] = arguments[_i];
-    }
-    target = target || {};
-    sources.forEach(function (o) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (typeof o[p] === 'object') {
-                    target[p] = assign(target[p], o[p]);
-                }
-                else {
-                    target[p] = o[p];
-                }
-            }
-        }
-    });
-    return target;
 }
 function contains(arr, val) {
     if (arr.indexOf(val) !== -1)
@@ -95,14 +76,14 @@ var ColursInstance = (function () {
      * @param style the starting style.
      */
     ColursInstance.prototype.start = function (style) {
-        var code = this.options.ansiStyles[style][0];
+        var tuple = this.options.ansiStyles[style];
         if (IS_WIN_TERM) {
-            if (style === 'blue')
-                code = 94;
             if (style === 'dim')
                 return '';
+            if (style === 'blue')
+                tuple[0] = 94;
         }
-        return style ? "" + PREFIX + this.options.ansiStyles[style][0] + "m" : '';
+        return style ? "" + PREFIX + tuple[0] + "m" : '';
     };
     /**
      * End
@@ -390,7 +371,7 @@ var ColursInstance = (function () {
      * @param state the state to set.
      */
     ColursInstance.prototype.enabled = function (state) {
-        if (!state)
+        if (typeof state === 'undefined')
             return this.options.enabled;
         this.options.enabled = state;
     };

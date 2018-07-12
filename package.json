@@ -1,6 +1,6 @@
 {
   "name": "colurs",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "Colors for NodeJS and Browser",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -45,6 +45,7 @@
     "typescript": "^2.5.0"
   },
   "dependencies": {
-    "ansi-html": "0.0.7"
+    "ansi-html": "0.0.7",
+    "object-assign": "^4.1.1"
   }
 }

@@ -4,6 +4,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./extens");
 var toHtml = require("ansi-html");
+var assign = require("object-assign");
 var constants_1 = require("./constants");
 // CONSTANTS & DEFAULTS
 var DOT_EXP = /\./g;
@@ -22,7 +23,7 @@ var levelMap = {
     warn: 'yellow',
     info: 'cyan'
 };
-var PREFIX = '\x1B['; // '\u001B';
+var PREFIX = '\x1B[';
 // HELPER METHODS
 function isNode() {
     if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined')
@@ -36,26 +37,6 @@ function isPlainObject(val) {
 }
 function isUndefined(val) {
     return (typeof val === 'undefined');
-}
-function assign(target) {
-    var sources = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        sources[_i - 1] = arguments[_i];
-    }
-    target = target || {};
-    sources.forEach(function (o) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (typeof o[p] === 'object') {
-                    target[p] = assign(target[p], o[p]);
-                }
-                else {
-                    target[p] = o[p];
-                }
-            }
-        }
-    });
-    return target;
 }
 function contains(arr, val) {
     if (arr.indexOf(val) !== -1)
@@ -97,14 +78,14 @@ var ColursInstance = (function () {
      * @param style the starting style.
      */
     ColursInstance.prototype.start = function (style) {
-        var code = this.options.ansiStyles[style][0];
+        var tuple = this.options.ansiStyles[style];
         if (IS_WIN_TERM) {
-            if (style === 'blue')
-                code = 94;
             if (style === 'dim')
                 return '';
+            if (style === 'blue')
+                tuple[0] = 94;
         }
-        return style ? "" + PREFIX + this.options.ansiStyles[style][0] + "m" : '';
+        return style ? "" + PREFIX + tuple[0] + "m" : '';
     };
     /**
      * End
@@ -392,7 +373,7 @@ var ColursInstance = (function () {
      * @param state the state to set.
      */
     ColursInstance.prototype.enabled = function (state) {
-        if (!state)
+        if (typeof state === 'undefined')
             return this.options.enabled;
         this.options.enabled = state;
     };
@@ -427,7 +408,7 @@ var get = function (options) {
 exports.get = get;
 
 }).call(this,require('_process'))
-},{"./constants":2,"./extens":3,"_process":6,"ansi-html":5}],2:[function(require,module,exports){
+},{"./constants":2,"./extens":3,"_process":7,"ansi-html":5,"object-assign":6}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./extens");
@@ -745,6 +726,98 @@ function _setTags (colors) {
 ansiHTML.reset()
 
 },{}],6:[function(require,module,exports){
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+'use strict';
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+},{}],7:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 

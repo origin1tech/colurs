@@ -19,6 +19,7 @@ describe('Colurs', () => {
 
   it('should create ansi colored string.', () => {
     const ansi = colurs.underline.gray('I am underlined gray');
+    console.log(ansi);
     assert.equal(isAnsi.test(<string>ansi), true);
   });
 
@@ -43,9 +44,13 @@ describe('Colurs', () => {
   });
 
   it('should create an instance of Colurs where colorization is disabled.', () => {
-    const _colurs = new Colurs({ enabled: false });
+    const _colurs = new Colurs();
+    _colurs.setOption('enabled', false);
+    const _colurs2 = new Colurs({ enabled: false });
     const ansi = _colurs.bold.red('I am bold red.');
+    const ansi2 = _colurs2.bold.red('I am bold red.');
     assert.equal(isAnsi.test(<string>ansi), false);
+    assert.equal(isAnsi.test(<string>ansi2), false);
   });
 
   it('should return array for console.log colorization.', () => {

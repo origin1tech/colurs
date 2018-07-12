@@ -1,6 +1,7 @@
 import './extens';
 import { IColurs, IColursInstance, IColurOptions, IAnsiStyles } from './interfaces';
 import * as toHtml from 'ansi-html';
+import * as assign from 'object-assign';
 import { STRIP_EXP, HAS_ANSI_EXP, ANSI_STYLE_NAMES as STYLE_NAMES, ANSI_STYLE_NAMES_ALL as ANSI_KEYS, ANSI_STYLES, CSS_STYLE_NAMES, CSS_STYLES, ANSI_STYLE_BG_NAMES as BG_STYLE_NAMES } from './constants';
 
 // declare these for build.
@@ -28,7 +29,7 @@ let levelMap = {
   info: 'cyan'
 };
 
-const PREFIX = '\x1B['; // '\u001B';
+const PREFIX = '\x1B[';
 
 // HELPER METHODS
 
@@ -46,23 +47,6 @@ function isPlainObject(val: any) {
 
 function isUndefined(val: any) {
   return (typeof val === 'undefined');
-}
-
-function assign(target, ...sources) {
-  target = target || {};
-  sources.forEach((o) => {
-    for (const p in o) {
-      if (o.hasOwnProperty(p)) {
-        if (typeof o[p] === 'object') {
-          target[p] = assign(target[p], o[p]);
-        }
-        else {
-          target[p] = o[p];
-        }
-      }
-    }
-  });
-  return target;
 }
 
 function contains(arr: string[], val: string): string {
@@ -115,14 +99,14 @@ class ColursInstance implements IColurs {
    * @param style the starting style.
    */
   private start(style: string): string {
-    let code = this.options.ansiStyles[style][0];
+    const tuple = this.options.ansiStyles[style];
     if (IS_WIN_TERM) {
-      if (style === 'blue')
-        code = 94;
       if (style === 'dim')
         return '';
+      if (style === 'blue')
+        tuple[0] = 94;
     }
-    return style ? `${PREFIX}${this.options.ansiStyles[style][0]}m` : '';
+    return style ? `${PREFIX}${tuple[0]}m` : '';
   }
 
   /**
@@ -486,7 +470,7 @@ class ColursInstance implements IColurs {
    * @param state the state to set.
    */
   enabled(state?: boolean) {
-    if (!state)
+    if (typeof state === 'undefined')
       return this.options.enabled;
     this.options.enabled = state;
   }
