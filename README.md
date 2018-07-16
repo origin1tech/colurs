@@ -2,7 +2,7 @@
 
 Simple utility for colorizing strings using ANSI styles, css styles for the browser and/or converting to html styled elements all with only ONE dependency.
 
-Nothing fancy just a stripped down Chalk or Colors written in Typescript and in a way we find useful without some of the extras. For example there are no "bright" colors.
+Nothing fancy just a stripped down Chalk or Colors written in Typescript and in a way we find useful without some of the extras. For example there are no RGB colors. Just standard and bright colors.
 
 ## Installation
 
